@@ -51,6 +51,13 @@ class MacOsCheckbox implements Checkbox {
 //	}
 //}
 
+/*
+ * when trying to implement abstract factory
+ * try to imagine and implement factory first and then 
+ * expand the function which returns objects into separate classes 
+ * matching the return type of those functions as well
+ */
+
 interface WidgetFactory {
 	Button getButton();
 	Checkbox getCheckbox();
