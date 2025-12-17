@@ -1,0 +1,167 @@
+Nice — great choice focusing on creational patterns. I searched recent, interview-focused resources and pulled together practice questions (with clear requirements) you can implement and explain in interviews today. I prioritized questions actually used in interviews and added concrete acceptance criteria, follow-ups the interviewer will ask, and hints on what to explain. (Sources used to find common interview asks: InterviewBit, GeeksforGeeks, Educative, StackOverflow, and recent writeups on Prototype/AbstractFactory.) 
+
+Below — 12 focused, interview-style problems grouped by creational pattern. For each problem I give: short requirement, what to implement (API/classes), sample tests / acceptance, and typical follow-ups / discussion points you should be ready to answer.
+
+
+---
+
+Factory (Factory Method / Simple Factory)
+
+1. Vehicle Factory (classic)
+Requirement: Implement a factory that creates vehicles (Car, Bike, Truck) based on a string/type enum. Each concrete vehicle has start(), stop(), and getMaxSpeed() behaviors. Client code must only depend on an interface Vehicle.
+Implement: IVehicle interface, Car/Bike/Truck classes, and VehicleFactory.create(type) returning IVehicle.
+Acceptance: VehicleFactory.create("car").getMaxSpeed() returns car speed; invalid type → throw IllegalArgumentException.
+Follow-ups: Add new vehicle types (open/closed), unit tests for factory, replace string with enum, lazy-loading of heavy objects, dependency injection alternatives. (Common interview staple — shows encapsulation of creation). 
+
+
+2. Config-based Factory (from interview to code)
+Requirement: App reads a config (JSON) with "storage": "s3" or "storage":"local". Create Storage instances (S3Storage, LocalStorage) using a factory that uses config at runtime.
+Implement: Storage interface, concrete classes, StorageFactory.getFromConfig(json).
+Acceptance: Swap config to switch backend at runtime without changing client code.
+Follow-ups: How to test with mocks, abstract factory vs factory method if multiple families (e.g., storage + cache), error handling when config missing. 
+
+
+
+
+---
+
+Abstract Factory
+
+3. UI Widget Family (Abstract Factory)
+Requirement: Desktop app needs to create families of widgets for MacOS and Windows (Button, Checkbox). Implement an AbstractFactory that returns the appropriate Button and Checkbox variants for the given platform. Client uses abstract interfaces only.
+Implement: WidgetFactory (abstract), MacWidgetFactory, WindowsWidgetFactory, Button, Checkbox interfaces + concrete classes.
+Acceptance: client.render(new WindowsWidgetFactory()) produces Windows-style button + checkbox.
+Follow-ups: When to prefer Abstract Factory over simple Factory, adding a new platform (scalability), dependency injection, testing factory injection. (Advanced interview-level pattern). 
+
+
+4. Database + Connection Factory (family of related objects)
+Requirement: Create families: for Postgres produce PostgresConnection + PostgresQueryBuilder; for Mongo produce MongoConnection + MongoQueryBuilder. Use Abstract Factory so client code can switch DB family.
+Implement: Abstract factory + concrete factories returning pairs of related objects.
+Acceptance: Switching factory changes both connection and query builder behavior consistently.
+Follow-ups: How migration/new DB affects factories, configuration-driven selection, tests, and how Abstract Factory can help plugin architectures.
+
+
+
+
+---
+
+Builder
+
+5. Complex HTTP Request Builder (real interview task)
+Requirement: Build an immutable HttpRequest object with mandatory method, url and optional headers, queryParams, body, timeout. Use Builder to construct valid requests with fluent API.
+Implement: HttpRequest with private constructor + HttpRequest.Builder fluent methods .withHeader(), .withBody(), .build() (validate required fields at build() time).
+Acceptance: new Builder().method("POST").url("/v1").withBody(b).build() returns an HttpRequest that is immutable. Invalid missing url → IllegalStateException.
+Follow-ups: Thread-safety of Builder, reuse of Builder vs creating new, telescoping constructor problem, step-builder for compile-time enforcement of mandatory fields. Educative/others use this as canonical example. 
+
+
+6. Pizza Order Builder (interview coding)
+Requirement: Build Pizza with mandatory size and optional toppings, extraCheese, crustType. Provide sensible defaults and validation (e.g., max 6 toppings).
+Implement: Pizza.Builder with validation in build() and toString() for easy testing.
+Acceptance: Building with >6 toppings throws error; string representation lists chosen options.
+Follow-ups: Make builder immutable, support JSON serialization, chaining builders for nested objects (address for delivery), and why Builder beats big constructor.
+
+
+
+
+---
+
+Prototype
+
+7. Game Object Prototype (performance-focused interview)
+Requirement: In a game, creating a Monster from scratch is expensive. Implement PrototypeRegistry where you can register a prototype Monster and clone it to spawn many similar monsters with minor tweaks (health, position). Use deep vs shallow clone strategies.
+Implement: Cloneable Monster, Monster.clone() (deep copy for mutable fields), PrototypeRegistry.getClone("zombie").
+Acceptance: Cloned monsters are separate objects: changing clone’s health doesn’t affect prototype. Show timings or memory advantage in test (optional).
+Follow-ups: When to use Prototype vs Factory, cloning pitfalls (mutable references), object graph deep copy strategies, Object.clone() vs copy constructors, serialization-based cloning. (This is a common LLD interview angle). 
+
+
+8. Document Template System (clone + modify)
+Requirement: Maintain templates (letter, invoice). When user picks a template, clone it and apply user-specific fields. Support partial override and fallback to template defaults.
+Implement: Template with cloneAndCustomize(map).
+Acceptance: Original template remains unchanged; customized doc contains overrides.
+Follow-ups: Storing prototypes in DB, memory vs creation cost tradeoff, concurrency concerns when prototypes updated.
+
+
+
+
+---
+
+Singleton
+
+9. Application Config Singleton (with thread-safety)
+Requirement: Implement a Config object that loads app settings once and is globally accessible. Ensure thread-safe lazy initialization and safe deserialization/reflective attacks.
+Implement: Thread-safe singleton (e.g., enum singleton in Java, or double-checked locking with volatile). Provide getInstance() and reload() semantics (if allowed).
+Acceptance: Multithreaded test where many threads call getInstance() — only one instance is created. Serialization-deserialization preserves singleton identity.
+Follow-ups (very common interview follow-ups): Explain enum-based singletons (Java) vs static field, how to prevent breaking by reflection, serialization pitfalls and readResolve(), why many consider Singleton an anti-pattern and alternatives (DI). Be ready to explain pros/cons. (Singleton interview questions appear a lot; StackOverflow threads cover nuances). 
+
+
+10. Connection Pool Manager (singleton-like)
+Requirement: Create a ConnectionPool manager that is effectively a globally accessible resource but must allow testing (mocking) and multiple instances in special cases (multi-tenant). Implement in a testable way (avoid hard singletons).
+Implement: Provide a PoolFactory or DI-friendly registration rather than static singleton access; alternatively provide singleton with override hook for tests.
+Acceptance: In unit tests you can inject a fake pool instance.
+Follow-ups: Discuss testing anti-patterns of singletons, provide DI examples, graceful shutdown and lifecycle management.
+
+
+
+
+---
+
+Mixed / Realistic interview problems that require choosing a creational pattern
+
+11. Plugin System Bootstrapping (choose Abstract Factory / Prototype / Builder)
+Requirement: Design a plugin loader that instantiates plugin objects based on plugin metadata. Plugins belong to families (e.g., Analytics plugins and Auth plugins) where each family has different required collaborators. Implement a solution that supports adding new plugin families without changing client code.
+What to do in interview: Propose an AbstractFactory for families, or use Factory + Prototype (load a prototype plugin and clone it), or a Builder if plugin construction is complex. Provide code skeleton for your chosen design and explain why.
+Follow-ups: Lifecycle, versioning, security, classloader isolation, hot-reload, and dependency injection.
+
+
+12. Email Campaign System (Builder + Factory + Singleton combo)
+Requirement: Build an email Campaign object (complex), use Builder for creation. Use a Factory to pick Transport (SMTP, SendGrid) and a Singleton CampaignScheduler to schedule sends. Demonstrate how these patterns combine.
+Acceptance: Show code for Campaign.Builder, TransportFactory.get("smtp"), and CampaignScheduler.getInstance().schedule(campaign).
+Follow-ups: Threading of scheduler, persistence, retry strategy, and how you'd swap singleton for injected scheduler.
+
+
+
+
+---
+
+How to practice & what interviewers look for
+
+Implement at least one coding example per pattern (preferably in the language you interview in). For each, write unit tests that prove behavior (construction, invalid inputs, cloning independence, thread-safety).
+
+Explain decisions: why you chose pattern, pros/cons, alternatives (DI, simple constructors, functional factories). Interviewers often ask “why not X?” so be ready.
+
+Discuss variations: e.g., for Singleton — enum-singleton (Java), DI, or service-locator tradeoffs; for Builder — the “step-builder” pattern to enforce mandatory fields at compile time.
+
+Complexity & tradeoffs: be ready to talk about memory vs CPU, testability, concurrency issues (cloning, singleton), and how patterns affect evolution of the codebase.
+
+
+
+---
+
+Quick study checklist (do these for each pattern)
+
+1. Write minimal working code + unit tests.
+
+
+2. Prepare 2–3 follow-up answers (thread-safety, serialization, testability, adding new variants).
+
+
+3. Explain a real-world analogy and when not to use the pattern.
+
+
+4. Be able to refactor one pattern into another and explain why (e.g., Factory → Abstract Factory when family of products appears).
+
+
+
+
+---
+
+If you want, I can now:
+
+generate starter code templates (Java / C# / Python / TypeScript) for 3 of these problems (pick which), including unit tests, or
+
+give short model answers you can memorize (2–3 lines) for interview verbal questions, or
+
+produce one timed coding prompt (e.g., Vehicle Factory) with hidden testcases you can run locally.
+
+
+Which of those do you want next?
