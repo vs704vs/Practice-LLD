@@ -4,7 +4,7 @@ Requirement: Maintain templates (letter, invoice). When user picks a template, c
 Implement: Template with cloneAndCustomize(map).
  */
 
-package com.example;
+package com.creational;
 
 import java.util.HashMap;
 

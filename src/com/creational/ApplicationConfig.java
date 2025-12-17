@@ -6,7 +6,7 @@ Acceptance: Multithreaded test where many threads call getInstance() — only on
 Follow-ups (very common interview follow-ups): Explain enum-based singletons (Java) vs static field, how to prevent breaking by reflection, serialization pitfalls and readResolve(), why many consider Singleton an anti-pattern and alternatives (DI). Be ready to explain pros/cons. (Singleton interview questions appear a lot; StackOverflow threads cover nuances). 
  */
 
-package com.example;
+package com.creational;
 
 class Config {
 	

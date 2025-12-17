@@ -5,7 +5,7 @@ What to do in interview: Propose an AbstractFactory for families, or use Factory
 Follow-ups: Lifecycle, versioning, security, classloader isolation, hot-reload, and dependency injection.
  */
 
-package com.example;
+package com.creational;
 
 interface AnalyticsPlugin {
 	
