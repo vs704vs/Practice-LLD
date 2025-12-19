@@ -1,17 +1,3 @@
-Perfect — this is exactly how **behavioral design patterns** are tested in **modern LLD interviews**, not by definitions but by **problem framing + requirements + trade-offs**.
-
-Below is a **curated, interview-relevant question bank**, structured **exactly like the creational one** you liked:
-
-* ✅ Problems actually asked / discussed in interviews
-* ✅ Clear **requirements** (what interviewer expects you to build)
-* ✅ **Acceptance criteria** (what must work)
-* ✅ **Follow-ups** interviewers usually ask
-* ✅ **Mixed / realistic problems** (Observer + Creational, etc.)
-
-I’ve filtered out textbook-only or outdated examples and focused on **real systems, backend-heavy, scalable scenarios**.
-
----
-
 # 🎯 Strategy Pattern
 
 ### 1) Payment Strategy Selection (very common)
@@ -417,25 +403,3 @@ They check if you can:
 5. **Write clean, extensible code**
 
 ---
-
-# 📌 How you should practice (important)
-
-For each pattern:
-
-* Implement **one clean problem**
-* Write **unit tests**
-* Prepare **2 follow-up answers**
-* Be able to say:
-
-  > “I chose this pattern because…”
-
----
-
-If you want next, I can:
-
-* Pick **5 most asked behavioral patterns** and give **ready-to-memorize interview answers**
-* Convert **one problem into a full Java/C# LLD implementation**
-* Give you **pattern identification drills** (you guess the pattern from requirements)
-* Create a **30-day LLD practice plan**
-
-Just tell me what you want next 👍
