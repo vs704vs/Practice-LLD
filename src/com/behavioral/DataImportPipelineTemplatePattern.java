@@ -17,7 +17,16 @@ Follow-ups:
 Template vs Strategy
 Hook methods
 When inheritance becomes limiting
+ */
 
+/*
+ * an abstract class can extend an abstract class - it dosen't need to implement all the abstract methods
+ * when a concrete class extends an abstract class - it has to implement all the abstract methods
+ * 
+ * In template design pattern:
+ * - we make a abstract class which has abstract and non abstract methods.
+ * - we extend this abstract class in concrete classes which implement all the abstract methods of the abstract template class.
+ * - the driver method only talks through the objects of the concrete classes.
  */
 
 package com.behavioral;
