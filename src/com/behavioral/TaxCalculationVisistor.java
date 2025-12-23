@@ -13,6 +13,20 @@ Why Visitor is rarely used but powerful
 
  */
 
+
+/*
+ * in visitor there are 2 types of parties - visitor and acceptor
+ * visitor type is the one which does the operations. acceptor is the one upon which actions need to be done 
+ * the acceptor accepts a visitor (has accept(visitor) function)
+ * the visitor visits an acceptor (has visit(acceptor) function)
+ * 
+ * the communication happens interface to interface since there can multiple types of acceptors and multiple types of visitors.
+ * the acceptor interface has only one function called accept(visitor). the "visitor" can be any type of visitor.
+ * the visitor interface has multiple visit(acceptor) functions. the number if visit functions = number of types of acceptors there are. See below example
+ * 
+ * the accept functions in the concrete class of all the acceptors call the visit(acceptor) function in the concrete visitor classes through the visitor interface.
+ */
+
 package com.behavioral;
 
 interface IProduct {
