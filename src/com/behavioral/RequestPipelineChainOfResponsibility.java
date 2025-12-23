@@ -22,6 +22,26 @@ Short-circuiting
 Debugging complexity
  */
 
+
+/*
+ * Difference between chain of responsibility and state design pattern :
+ * 
+ * Driver class - . In Chain of responsibility 
+ * State:- 
+ * - State you have to toggle/initiate the next step by calling the function next()
+ * - The Driver method only talks to the central state management class which relays the operations to concete state classes.
+ * - There is a central state management class which holds a variable currentState and ability to setState.
+ * - currentState is of type IState which is an interface which is implemented by all the contrete state classes. 
+ * - The central state management class always has context of the current state being maintained and the concrete state classes decide which next step show the currentState go to by calling the setter method in the central state management class. 
+ * 
+ * Chain of responsibiility:-
+ * - all the next handlers are already pre configured in the driver method. The control simply flows from one step to the next set step.
+ * - The driver method talks through the concrete classes (basically the first concrete class which starts the flow of operations).
+ * - We do not have interfaces here. Here also we have a central class which is abstract in nature. this central abstract class has a setter method and an abstract function action().  
+ * - Here the central class maintains a variable nextStep which is of type of the abstract class itself. the concrete classes are the steps in this case which extend the central abstract class and override the action() method to implement functionality. 
+ * - the concrete class here do not decide which nextStep should the control go to. It is pre decided by the driver method.
+ */
+
 package com.behavioral;
 
 
