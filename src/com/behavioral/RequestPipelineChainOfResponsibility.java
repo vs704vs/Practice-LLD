@@ -24,6 +24,9 @@ Debugging complexity
 
 
 /*
+ * In linked list, the Node class has a variable "next" of type Node which points to the next node (which is inherently the next class with Node type)
+ * Similarly for Chain of responsibility, Inside the central abstract class we have a "nextStep" variable  which is of type of the central abstract class. This nextStep points to the next class the control should flow to (basically point to the next concrete class implementation of the central abstract class)
+ * 
  * Difference between chain of responsibility and state design pattern :
  * 
  * Driver class - . In Chain of responsibility 
