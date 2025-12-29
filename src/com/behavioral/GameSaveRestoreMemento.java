@@ -57,50 +57,103 @@ class Memento {
 	}
 }
 
+// normal class supporting saving and undo operations 
+//class GameHistory {
+//	Stack<Memento> st;
+//	
+//	GameHistory() {
+//		this.st = new Stack<>();
+//	}
+//	
+//	public void push(Memento m) {
+//		st.push(m);
+//	}
+//	
+//	public Memento pop() {
+//		if(st.isEmpty()) {
+//			throw new NullPointerException("stack is empty");
+//		}
+//		else {
+//			return st.pop();
+//		}
+//	}
+//}
+
+
+
+// enhanced history class supporting both undo and redo operations
 class GameHistory {
-	Stack<Memento> st;
+	
+	// stores past states (what you already have).
+	Stack<Memento> undoStack;
+	// stores states that were undone, so you can re-apply them.
+	Stack<Memento> redoStack;
 	
 	GameHistory() {
-		this.st = new Stack<>();
+		this.undoStack = new Stack<>();
+		this.redoStack = new Stack<>();
+	}
+		
+	public void save(Memento memento) {
+		undoStack.push(memento);
+		redoStack.clear();
 	}
 	
-	public void push(Memento m) {
-		st.push(m);
+	public Memento undo() {
+		redoStack.push(undoStack.peek());
+		return undoStack.pop();
 	}
 	
-	public Memento pop() {
-		if(st.isEmpty()) {
-			throw new NullPointerException("stack is empty");
-		}
-		else {
-			return st.pop();
-		}
+	public Memento redo() {
+		undoStack.push(redoStack.peek());
+		return redoStack.pop();
 	}
 }
+
+
+/*
+ * 
+- Undo:
+- Pop from the undo stack.
+- Push the popped state onto the redo stack.
+- Restore the popped state.
+
+- Redo:
+- Pop from the redo stack.
+- Push the popped state back onto the undo stack.
+- Restore the popped state.
+
+- New Save:
+- When you save a new state, clear the redo stack (because redo history is invalid once you branch off with a new change).
+ */
+
 
 public class GameSaveRestoreMemento {
 	public static void main(String[] args) {
 		GameStateManager gameStateManager = new GameStateManager();
-		GameHistory gameHistory = new GameHistory();
-		
-		gameStateManager.setGameState("start");
-        System.out.println(gameStateManager.getGameState());
-        
-        // save game
-        gameHistory.push(gameStateManager.save());
+        GameHistory gameHistory = new GameHistory();
+
+        gameStateManager.setGameState("start");
+        gameHistory.save(gameStateManager.save());
+        System.out.println("Current: " + gameStateManager.getGameState());
 
         gameStateManager.setGameState("level 1");
-        gameHistory.push(gameStateManager.save());
+        gameHistory.save(gameStateManager.save());
+        System.out.println("Current: " + gameStateManager.getGameState());
 
         gameStateManager.setGameState("level 2");
+        gameHistory.save(gameStateManager.save());
+        System.out.println("Current: " + gameStateManager.getGameState());
 
-        // restore last
-        gameStateManager.restore(gameHistory.pop()); // back to "level 1"
-        System.out.println(gameStateManager.getGameState());
+        // Undo twice
+        gameStateManager.restore(gameHistory.undo());
+        System.out.println("Undo → " + gameStateManager.getGameState());
 
-        // restore previous
-        gameStateManager.restore(gameHistory.pop()); // back to "start"
-        System.out.println(gameStateManager.getGameState());
-        
+        gameStateManager.restore(gameHistory.undo());
+        System.out.println("Undo → " + gameStateManager.getGameState());
+
+        // Redo once
+        gameStateManager.restore(gameHistory.redo());
+        System.out.println("Redo → " + gameStateManager.getGameState());        
 	}
 }
