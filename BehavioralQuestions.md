@@ -343,53 +343,339 @@ Allow saving and restoring game state without exposing internals.
 
 ---
 
+
 # 🔥 Mixed / Realistic Interview Problems (IMPORTANT)
 
-### 17) Event-Driven Notification Platform (Observer + Factory)
+## 1️⃣ Notification Platform (Observer + Strategy + Factory)
 
-**Requirement:**
-System emits events (OrderPlaced, PaymentFailed). Different notification channels are created via Factory and subscribed via Observer.
+**Asked in:** Flipkart, Swiggy, Amazon (variants)
 
-**Patterns Used:**
+### Requirement
 
-* Factory → create notifier
-* Observer → subscribe to events
+Design a notification system where:
 
-**Follow-ups:**
+* Events: `OrderPlaced`, `OrderCancelled`, `PaymentFailed`
+* Channels: Email, SMS, WhatsApp, Push
+* Each user can **configure preferred channels**
+* Each channel has **different retry logic**
 
-* Scaling observers
-* Message queues vs Observer
-* Retry & failure handling
+### Patterns Used
+
+* **Observer** → event subscription
+* **Strategy** → delivery & retry strategy
+* **Factory** → create notification channel objects
+
+### Interview Focus
+
+* Why Observer instead of direct calls?
+* Why Strategy for retry?
+* How to add Slack notification tomorrow?
+* Async vs sync observers
 
 ---
 
-### 18) Trading System (Strategy + Observer + Singleton)
+## 2️⃣ Workflow Engine (State + Observer + Chain of Responsibility)
 
-**Requirement:**
+**Asked in:** Atlassian, Salesforce, ServiceNow
 
-* Strategy → trading algorithm
-* Observer → price updates
-* Singleton → market data feed
+### Requirement
 
-**Follow-ups:**
+Design a workflow system where:
+
+* Entity goes through states: `Draft → Review → Approved → Rejected`
+* Each transition:
+
+  * Triggers notifications
+  * Passes through validation rules (role, SLA, permissions)
+
+### Patterns Used
+
+* **State** → behavior per state
+* **Observer** → notify watchers
+* **Chain of Responsibility** → validation pipeline
+
+### Follow-ups
+
+* Persisting state
+* Rollback on failure
+* Workflow versioning
+
+---
+
+## 3️⃣ Rate Limiter + Access Control (Chain + Strategy)
+
+**Asked in:** Amazon, Uber
+
+### Requirement
+
+Incoming API request passes through:
+
+1. Authentication
+2. Authorization
+3. Rate limiting
+4. Request validation
+
+Different APIs use **different rate-limit strategies**.
+
+### Patterns Used
+
+* **Chain of Responsibility** → request pipeline
+* **Strategy** → fixed window, sliding window, token bucket
+
+### Interview Twist
+
+> “Tomorrow we want per-user + per-IP rate limits — how do you extend?”
+
+---
+
+## 4️⃣ Trading Platform (Observer + Strategy + Singleton)
+
+**Asked in:** Bloomberg, Goldman Sachs, HFT startups
+
+### Requirement
+
+* Market price feed (single source)
+* Multiple trading algorithms subscribe
+* Algorithms can be switched at runtime
+* Only one market feed instance allowed
+
+### Patterns Used
+
+* **Observer** → price updates
+* **Strategy** → trading logic
+* **Singleton** → market data feed
+
+### Follow-ups
 
 * Thread safety
-* Latency concerns
-* Strategy hot-swap
+* Latency guarantees
+* Backpressure handling
 
 ---
 
-### 19) Workflow Engine (State + Observer + Chain)
+## 5️⃣ Chat Application (Mediator + Observer)
 
-**Requirement:**
-Workflow transitions trigger observers and pass through validation chains.
+**Asked in:** Microsoft, Meta (LLD rounds)
 
-**Follow-ups:**
+### Requirement
 
-* Transaction boundaries
-* Rollbacks
-* Audit trails
+* Users send messages via chat rooms
+* Users can subscribe/unsubscribe
+* Message delivery events trigger notifications
 
+### Patterns Used
+
+* **Mediator** → message routing
+* **Observer** → notifications, read receipts
+
+### Interview Angle
+
+* Mediator vs Observer difference
+* Scaling chat rooms
+* Avoiding god mediator
+
+---
+
+## 6️⃣ Undo / Redo System (Command + Memento)
+
+**Asked in:** Adobe, Atlassian
+
+### Requirement
+
+* Support undo/redo
+* Each action changes complex internal state
+* State snapshot should not expose internals
+
+### Patterns Used
+
+* **Command** → actions
+* **Memento** → state snapshots
+
+### Follow-ups
+
+* Memory optimization
+* Partial undo
+* Command batching
+
+---
+
+## 7️⃣ Rule Engine (Chain + Strategy + Interpreter-lite)
+
+**Asked in:** Paytm, Razorpay
+
+### Requirement
+
+Rules like:
+
+* If amount > 10k → extra verification
+* If country != India → block
+* If VIP → skip some rules
+
+Rules should be:
+
+* Configurable
+* Order-sensitive
+
+### Patterns Used
+
+* **Chain of Responsibility** → rule execution
+* **Strategy** → rule behavior
+* (Optional) **Interpreter** for DSL
+
+---
+
+## 8️⃣ Logging & Audit System (Chain + Observer)
+
+**Asked in:** Oracle, SAP
+
+### Requirement
+
+* Logs go through filters
+* Certain logs trigger alerts
+* Multiple destinations (file, DB, external service)
+
+### Patterns Used
+
+* **Chain** → filtering
+* **Observer** → alerting system
+
+### Interview Question
+
+> “Why not just if-else logging?”
+
+---
+
+## 9️⃣ Scheduler System (Command + Singleton + Observer)
+
+**Asked in:** Amazon (scheduler services)
+
+### Requirement
+
+* Schedule jobs
+* Execute later
+* Notify listeners on completion/failure
+
+### Patterns Used
+
+* **Command** → encapsulated jobs
+* **Singleton** → scheduler
+* **Observer** → job listeners
+
+---
+
+## 🔟 Form Validation Engine (Template + Strategy)
+
+**Asked in:** Google, Frontend-heavy LLD rounds
+
+### Requirement
+
+Form submission steps:
+
+1. Sanitize
+2. Validate
+3. Persist
+4. Notify
+
+Validation rules differ per form.
+
+### Patterns Used
+
+* **Template Method** → workflow
+* **Strategy** → validation logic
+
+---
+
+## 1️⃣1️⃣ Document Processing Pipeline
+
+**(Template + Chain + Observer)**
+**Asked in:** Document management systems
+
+### Requirement
+
+* Process documents in steps
+* Validation failures stop pipeline
+* Completion triggers notifications
+
+### Patterns Used
+
+* Template → workflow
+* Chain → validation
+* Observer → events
+
+---
+
+## 1️⃣2️⃣ Multi-Level Approval System
+
+**(State + Observer + Mediator)**
+**Asked in:** Enterprise HR / ERP systems
+
+### Requirement
+
+* Approval passes through levels
+* Transitions notify stakeholders
+* No approver talks directly to another
+
+### Patterns Used
+
+* State → approval stages
+* Mediator → coordination
+* Observer → notifications
+
+---
+
+## 1️⃣3️⃣ API Gateway Design
+
+**(Chain + Strategy + Observer)**
+**Asked in:** Backend platform teams
+
+### Requirement
+
+* Request validation
+* Rate limiting
+* Routing
+* Metrics publishing
+
+### Patterns Used
+
+* Chain → pipeline
+* Strategy → routing logic
+* Observer → metrics/events
+
+---
+
+## 1️⃣4️⃣ Recommendation System
+
+**(Strategy + Observer)**
+**Asked in:** Netflix-like systems
+
+### Requirement
+
+* Different recommendation algorithms
+* Trigger recalculation on user activity
+
+### Patterns Used
+
+* Strategy → recommendation logic
+* Observer → activity events
+
+---
+
+## 1️⃣5️⃣ Version Control Lite
+
+**(Command + Memento + Observer)**
+**Asked in:** Dev tools companies
+
+### Requirement
+
+* Track changes
+* Rollback
+* Notify collaborators
+
+### Patterns Used
+
+* Command → changes
+* Memento → snapshots
+* Observer → collaboration updates
 ---
 
 # 🧠 How interviewers evaluate you
