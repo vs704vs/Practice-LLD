@@ -64,13 +64,13 @@ class VersionManager {
 		this.mainText = mainText;
 	}
 
-	public void restore(Memento m) {
+	public void restore(Momento m) {
 		setMainText(m.text);
 		notifyObservers();
 	}
 
-	public Memento save() {
-		return new Memento(mainText);
+	public Momento save() {
+		return new Momento(mainText);
 	}
 
 	
@@ -108,37 +108,37 @@ class VersionManager {
 	}
 }
 
-class Memento {
+class Momento {
 	String text;
 
-	Memento(String text) {
+	Momento(String text) {
 		this.text = text;
 	}
 }
 
 class VersionManagerHistory {
-	Stack<Memento> undoStack;
-	Stack<Memento> redoStack;
+	Stack<Momento> undoStack;
+	Stack<Momento> redoStack;
 
 	VersionManagerHistory() {
-		undoStack = new Stack<Memento>();
-		redoStack = new Stack<Memento>();
+		undoStack = new Stack<Momento>();
+		redoStack = new Stack<Momento>();
 	}
 	
-	public void saveState(Memento m) {
+	public void saveState(Momento m) {
 		undoStack.push(m);
 		redoStack.clear();
 	}
 
 
 	// Undo operation: push current state to redo stack and return last state from undo stack
-	public Memento undo() {
+	public Momento undo() {
 		redoStack.push(undoStack.pop());
 		return undoStack.peek();
 	}
 
 	// Redo operation: push current state to undo stack and return last state from redo stack
-	public Memento redo() {
+	public Momento redo() {
 		undoStack.push(redoStack.peek());
 		return redoStack.pop();
 	}
@@ -208,7 +208,7 @@ public class VersionControl_CommandMementoObserver {
         // --- Undo twice ---
         System.out.println("\n--- Undo x2 ---");
         
-        Memento m;
+        Momento m;
         m = history.undo();                 // step back to "Hey, Hello World"
         if (m != null) vm.restore(m);
         
