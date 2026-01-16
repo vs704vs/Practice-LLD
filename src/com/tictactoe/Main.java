@@ -47,68 +47,55 @@ public class Main {
 		/*
 		 * steps:
 		 * 
-		 * make 2 players
-		 * set first player active (1st player will go first)
-		 * start game
+		 * make 2 players set first player active (1st player will go first) start game
 		 * 
-		 * while board is not full
-		 * - get active player 
-		 * - let active player make move
-		 * - take move input
-		 * - check valid move 
-		 * - insert move on board
-		 * - check win 
-		 * - if yes stop game else switch active player
+		 * while board is not full - get active player - let active player make move -
+		 * take move input - check valid move - insert move on board - check win - if
+		 * yes stop game else switch active player
 		 * 
-		 * outside while loop declare tie game 
+		 * outside while loop declare tie game
 		 */
-		
-		Scanner scanner = new Scanner(System.in);
-		
-		String player1Name, player2Name;
-		
-		System.out.println("Enter player1 name");
-		player1Name = scanner.next();
-		System.out.println("Enter player2 name");
-		player2Name = scanner.next();
-		
-		Player player1 = new Player(player1Name, 'X');
-		Player player2 = new Player(player2Name, 'O');
-		Board board = new Board();
-		
-		Game game = new Game(board, player1, player2);
-		game.startGame();
-		
-		
-		
-		while (!game.isBoardFull()) {
-			Player activePlayer = game.getActivePlayer();
-			
-			System.out.println(activePlayer.getName() + " input:");
-			System.out.print("Input row - ");
-			int r = scanner.nextInt();
-			System.out.print("Input column - ");
-			int c = scanner.nextInt();
-			
-			int res = game.performMove(r, c);
-			
-			if(res == 1) {
-				System.out.println(activePlayer.getName() + " has won the game!");
-				game.printBoard();
-				return;
+
+		try(Scanner scanner = new Scanner(System.in)) {
+			String player1Name, player2Name;
+
+			System.out.println("Enter player1 name");
+			player1Name = scanner.next();
+			System.out.println("Enter player2 name");
+			player2Name = scanner.next();
+
+			Player player1 = new Player(player1Name, 'X');
+			Player player2 = new Player(player2Name, 'O');
+			Board board = new Board();
+
+			Game game = new Game(board, player1, player2);
+			game.startGame();
+
+			while (!game.isBoardFull()) {
+				Player activePlayer = game.getActivePlayer();
+
+				System.out.println(activePlayer.getName() + " input:");
+				System.out.print("Input row - ");
+				int r = scanner.nextInt();
+				System.out.print("Input column - ");
+				int c = scanner.nextInt();
+
+				int res = game.performMove(r, c);
+
+				if (res == 1) {
+					System.out.println(activePlayer.getName() + " has won the game!");
+					game.printBoard();
+					return;
+				} else if (res == -1) {
+					System.out.println("Invalid move, try again");
+					continue;
+				} else {
+					game.switchActivePlayer();
+					game.printBoard();
+				}
 			}
-			else if(res == -1) {
-				System.out.println("Invalid move, try again");
-				continue;
-			}
-			else {
-				game.switchActivePlayer();
-				game.printBoard();
-			}
+
+			System.out.println("Game is tied");
 		}
-		
-		System.out.println("Game is tied");
-		
-		scanner.close();
 	}
 }
